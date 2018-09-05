@@ -1,5 +1,7 @@
 pipeline {
-    agent { label 'linux' }
+    agent {
+        docker { image 'python' }
+    }
 
     stages {
         stage('Deploy') {

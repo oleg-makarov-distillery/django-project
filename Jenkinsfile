@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage('Deploy') {
             steps {
+                sh 'which python3'
                 echo 'Deploying....'
             }
         }

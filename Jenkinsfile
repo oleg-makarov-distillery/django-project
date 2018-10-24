@@ -25,8 +25,12 @@ pipeline {
                 script {
                     docker.image("${env.registry}:${env.BUILD_ID}").withRun("-e secret_key=${env.secret_key}") { c ->
                         sh 'env'
-                        sh 'virtualenv --no-site-packages .env'
                         sh """
+                        #!/bin/bash
+                        virtualenv --no-site-packages .env
+                        """
+                        sh """
+                        #!/bin/bash
                         . .env/bin/activate
                         if [[ -f requirements.txt ]]; then
                           pip install -r requirements.txt

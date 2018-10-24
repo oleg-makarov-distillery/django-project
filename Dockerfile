@@ -4,7 +4,7 @@ ADD . /opt/django-project
 WORKDIR /opt/django-project
 
 RUN apt-get update && apt-get install -y libpq-dev build-essential vim binutils libffi-dev \
-&& pin install virtualenv \
+&& pip install virtualenv \
 && pip install -r /opt/django-project/requirements.txt
 
 RUN ["chmod", "+x", "/opt/django-project/run.sh"]

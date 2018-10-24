@@ -24,16 +24,7 @@ pipeline {
 
                 script {
                     docker.image("${env.registry}:${env.BUILD_ID}").inside("-e secret_key=${env.secret_key}") { 
-                        sh 'pip install virtualenv'
-                        sh 'python -m virtualenv .env'
-                        sh """
-                        #!/bin/bash
-                        . .env/bin/activate
-                        if [[ -f requirements.txt ]]; then
-                          pip install -r requirements.txt
-                        fi
-                        python manage.py test
-                        """
+                        sh 'python manage.py test'
                     }
                 }
             }

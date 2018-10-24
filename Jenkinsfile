@@ -24,9 +24,14 @@ pipeline {
 
                 script {
                     docker.image("${env.registry}:${env.BUILD_ID}").withRun("-e secret_key=${env.secret_key}") { c ->
-                        sh 'env'
-                        sh 'pip install virtualenv'
-                        sh 'python -m virtualenv .env'
+                        sh """
+                        #!/bin/bash
+                        pwd
+                        ls
+                        which python
+                        python -V
+                        // sh 'pip install virtualenv'
+                        //sh 'python -m virtualenv .env'
                         sh """
                         #!/bin/bash
                         . .env/bin/activate

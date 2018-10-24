@@ -9,11 +9,12 @@ pipeline {
     stages {
         stage('Build image') {
             steps {
+                sh 'env'
                 echo 'Starting to build docker image'
 
                 script {
                     checkout scm
-                    def dockerImage = docker.build("registry:${env.BUILD_ID}")
+                    def dockerImage = docker.build("${env.registry}:${env.BUILD_ID}")
                 }
             }
         }
@@ -22,7 +23,8 @@ pipeline {
                 echo 'Testing docker image'
 
                 script {
-                    docker.image('dockerImage').withRun('-e "secret_key=secret_key" ') { c ->
+                    docker.image('dockerImage').withRun('-e "secret_key=${env.secret_key}" ') { c ->
+                        sh 'env'
                         sh 'python manage.py test'
                     }
                 }

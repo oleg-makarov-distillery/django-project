@@ -23,7 +23,7 @@ pipeline {
                 echo 'Testing docker image'
 
                 script {
-                    docker.image('dockerImage').withRun("-e secret_key=${env.secret_key}") { c ->
+                    docker.image(dockerImage).withRun("-e secret_key=${env.secret_key}") { c ->
                         sh 'env'
                         sh 'python manage.py test'
                     }

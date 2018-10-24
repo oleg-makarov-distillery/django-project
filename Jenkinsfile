@@ -24,6 +24,7 @@ pipeline {
                 script {
                     docker.image('dockerImage').withRun('-e "secret_key=secret_key" ') { c ->
                         sh 'python manage.py test'
+                    }
                 }
             }
         }

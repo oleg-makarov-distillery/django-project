@@ -30,6 +30,7 @@ pipeline {
                         ls
                         which python
                         python -V
+                        """
                         // sh 'pip install virtualenv'
                         //sh 'python -m virtualenv .env'
                         sh """

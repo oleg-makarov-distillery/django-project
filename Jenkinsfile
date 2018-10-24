@@ -24,6 +24,7 @@ pipeline {
 
                 script {
                     docker.image("${env.registry}:${env.BUILD_ID}").withRun("-e secret_key=${env.secret_key}") { c ->
+                        sh 'which pip3'
                         sh '/usr/local/bin/pip3 install virtualenv'
                         sh '/usr/local/bin/python3 -m virtualenv .env'
                         sh """

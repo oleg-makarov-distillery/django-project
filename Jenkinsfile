@@ -24,7 +24,7 @@ pipeline {
 
                 script {
                     docker.image("${env.registry}:${env.BUILD_ID}").withRun("-e secret_key=${env.secret_key}") { c ->
-                        sh 'env'
+                        sh 'echo $PATH'
                         sh """
                         #!/bin/bash
                         virtualenv --no-site-packages .env

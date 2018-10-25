@@ -14,7 +14,8 @@ pipeline {
 
                 script {
                     checkout scm
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = registry + ":$BUILD_NUMBER"
+                    buildImage = docker.build(dockerImage)
                 }
             }
         }

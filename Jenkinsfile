@@ -14,7 +14,7 @@ pipeline {
 
                 script {
                     checkout scm
-                    def dockerImage = docker.build("${env.registry}:${env.BUILD_ID}")
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
                 echo 'Testing docker image'
 
                 script {
-                    docker.image("${env.registry}:${env.BUILD_ID}").inside("-e secret_key=${env.secret_key}") { 
+                    docker.image(dockerImage).inside("-e secret_key=${env.secret_key}") { 
                         sh 'python manage.py test'
                     }
                 }

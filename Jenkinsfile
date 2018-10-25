@@ -36,7 +36,7 @@ pipeline {
 
                 script {
                     docker.withRegistry( 'https://index.docker.io', registryCredential ) {
-                        dockerImage.push()
+                        buildImage.push()
                     }
                 }
             }

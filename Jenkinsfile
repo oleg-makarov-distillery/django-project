@@ -30,5 +30,16 @@ pipeline {
                 }
             }
         }
+        stage('Upload to hub') {
+            steps {
+                echo 'Uploading docker image to docker hub'
+
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }        
     }
 }

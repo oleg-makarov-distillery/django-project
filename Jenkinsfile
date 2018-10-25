@@ -35,7 +35,7 @@ pipeline {
                 echo 'Uploading docker image to docker hub'
 
                 script {
-                    docker.withRegistry( 'https://index.docker.io', registryCredential ) {
+                    docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
                         buildImage.push()
                     }
                 }

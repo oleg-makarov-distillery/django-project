@@ -7,6 +7,7 @@ pipeline {
       kube_config = credentials('kubectl-config')
     }
     agent any
+    stages {
         stage('Deploy to k8s') {
             steps {
                 echo 'Working with k8s'

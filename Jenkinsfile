@@ -4,7 +4,7 @@ pipeline {
       registryCredential = 'dockerhub'
       dockerImage = ''
       secret_key = 'django-secret-key'
-      kube_config = 'kubectl-config'
+      kube_config = credentials('kubectl-config')
     }
     agent any
     stages {

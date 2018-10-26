@@ -14,7 +14,7 @@ pipeline {
 
                 script {
                     docker.image('docker:latest').inside("-e kube_config=${env.kube_config}") {
-                        sh 'echo $kube_config'
+                        sh 'sleep 1000'
                     }
                 }
             }

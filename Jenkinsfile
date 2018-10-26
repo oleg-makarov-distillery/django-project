@@ -13,8 +13,8 @@ pipeline {
                 echo 'Working with k8s'
 
                 script {
-                    docker.image('docker:latest').inside {
-                        sh 'echo kube_config'
+                    docker.image('docker:latest').inside("-e kube_config=${env.kube_config}") {
+                        sh 'echo $kube_config'
                     }
                 }
             }

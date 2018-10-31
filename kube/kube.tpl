@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: APP_NAME
-          image: flomsk/django-test:7
+          image: IMAGE_NAME
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -71,4 +71,4 @@ spec:
       - backend:
           serviceName: APP_NAME
           servicePort: 8000
-        path: /
+        path: /health

@@ -9,17 +9,50 @@ pipeline {
     }
     agent any
     stages {
+        stage('Build image') {
+            steps {
+                sh 'env'
+                echo 'Starting to build docker image'
+
+                script {
+                    checkout scm
+                    dockerImage = registry + ":$BUILD_NUMBER"
+                    buildImage = docker.build(dockerImage)
+                }
+            }
+        }
+        stage('Unit test') {
+            steps {
+                echo 'Testing docker image'
+
+                script {
+                    docker.image(dockerImage).inside("-e secret_key=${env.secret_key}") { 
+                        sh 'python manage.py test'
+                    }
+                }
+            }
+        }
+        stage('Upload to hub') {
+            steps {
+                echo 'Uploading docker image to docker hub'
+
+                script {
+                    docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+                        buildImage.push()
+                    }
+                }
+            }
+        } 
         stage('Deploy to k8s') {
             steps {
                 echo 'Working with k8s'
 
                 script {
-                    docker.image('flomsk/kubectl').inside("-u root -v ${env.kube_config}:/root/.kube/config") {
+                    docker.image('flomsk/kubectl').inside("-u root -e kube_config=${env.kube_config}") {
                         sh """
-                        cat kube/kube.tpl | sed -e "s#APP_NAME#${env.git_name}#g" -e "s#BRANCH#${env.BRANCH_NAME}#g" -e  "s#SECRET_KEY#${env.secret_key}#g" > kubernetes.yml
-                        ls
-                        sleep 600
-                        cat kubernetes.yaml
+                        cat $kube_config > ~/.kube/config
+                        cat kube/kube.tpl | sed -e "s#APP_NAME#${env.git_name}#g" -e "s#IMAGE_NAME#${env.dockerImage}#g" -e "s#BRANCH#${env.BRANCH_NAME}#g" -e "s#SECRET_KEY#${env.secret_key}#g" > kubernetes.yml
+                        kubectl apply -f kubernetes.yaml
                         """
                     }
                 }

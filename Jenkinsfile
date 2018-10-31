@@ -13,9 +13,8 @@ pipeline {
                 echo 'Working with k8s'
 
                 script {
-                    docker.image('lachlanevenson/k8s-kubectl').inside("-u root -e kube_config=${env.kube_config}") {
+                    docker.image('lachlanevenson/k8s-kubectl').inside("-u root -v ${env.kube_config}:/root/.kube/config") {
                         sh """
-                        cat $kube_config > ~/.kube/config
                         kubectl get nodes
                         """
                     }

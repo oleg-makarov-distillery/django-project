@@ -4,7 +4,7 @@ pipeline {
       registry = "flomsk/django-test"
       registryCredential = 'dockerhub'
       dockerImage = ''
-      secret_key = 'django-secret-key'
+      secret_key = credentials('django-secret-key')
       kube_config = credentials('kubectl-config')
     }
     agent any

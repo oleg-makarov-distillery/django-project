@@ -17,6 +17,8 @@ pipeline {
                     docker.image('flomsk/kubectl').inside("-u root -v ${env.kube_config}:/root/.kube/config") {
                         sh """
                         cat kube/kube.tpl | sed -e "s#APP_NAME#${env.git_name}#g" -e "s#BRANCH#${env.BRANCH_NAME}#g" -e  "s#SECRET_KEY#${env.secret_key}#g" > kubernetes.yml
+                        ls
+                        sleep 600
                         cat kubernetes.yaml
                         """
                     }

@@ -6,13 +6,24 @@ pipeline {
       dockerImage = ''
       secret_key = credentials('django-secret-key')
       kube_config = credentials('kubectl-config')
+      // Slack configuration
+      SLACK_CHANNEL = '#ci-cd-webhook-tests'
+      SLACK_COLOR_DANGER  = '#E01563'
+      SLACK_COLOR_INFO    = '#6ECADC'
+      SLACK_COLOR_WARNING = '#FFC300'
+      SLACK_COLOR_GOOD    = '#3EB991'
     }
     agent any
     stages {
         stage('Build image') {
             steps {
-                sh 'env'
                 echo 'Starting to build docker image'
+
+                wrap([$class: 'BuildUser']) { script { env.USER_ID = "${BUILD_USER_ID}" } }
+
+                slackSend (color: "${env.SLACK_COLOR_INFO}",
+                   channel: "${params.SLACK_CHANNEL}",
+                   message: "*STARTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
 
                 script {
                     checkout scm
@@ -61,4 +72,29 @@ pipeline {
             }
         }
     }
+    post {
+
+      aborted {
+
+        echo "Sending message to Slack"
+        slackSend (color: "${env.SLACK_COLOR_WARNING}",
+                   channel: "${params.SLACK_CHANNEL}",
+                   message: "*ABORTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+      } // aborted
+
+      failure {
+
+        echo "Sending message to Slack"
+        slackSend (color: "${env.SLACK_COLOR_DANGER}",
+                   channel: "${params.SLACK_CHANNEL}",
+                   message: "*FAILED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+      } // failure
+
+      success {
+        echo "Sending message to Slack"
+        slackSend (color: "${env.SLACK_COLOR_GOOD}",
+                   channel: "${params.SLACK_CHANNEL}",
+                   message: "*SUCCESS:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+      } // success
+   }
 }
